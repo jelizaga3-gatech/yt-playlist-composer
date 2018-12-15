@@ -1,3 +1,4 @@
+import json
 import os
 
 import google_auth_oauthlib.flow
@@ -8,8 +9,11 @@ from django.urls import reverse
 app_root_path = settings.YT_PLAYLIST_DIR
 
 # If local machine, use client_secret file, if prod use config_var
-client_secret_config_var = os.environ.get('client_secret_google_api', None)
-if not client_secret_config_var:
+try:
+    client_secret_config_var = json.loads(os.environ.get('client_secret_google_api', None))
+except TypeError:
+    client_secret_config_var = None
+if client_secret_config_var:
     client_secret = app_root_path + "/tmp/client_secret.json"
 
 oauth_callback_redirect_uri = "http://127.0.0.1:8000/oauth2callback/"
