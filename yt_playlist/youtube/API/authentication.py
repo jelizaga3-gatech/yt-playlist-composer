@@ -9,14 +9,13 @@ from django.urls import reverse
 app_root_path = settings.YT_PLAYLIST_DIR
 
 # If local machine, use client_secret file, if prod use config_var
+# i.e. Parse client_secret string to json, if fails, set the local variable and conditional "client_secret_config_var".
 try:
     client_secret_config_var = json.loads(os.environ.get('client_secret_google_api', None))
 except TypeError:
     client_secret_config_var = None
-if client_secret_config_var:
     client_secret = app_root_path + "/tmp/client_secret.json"
 
-oauth_callback_redirect_uri = "http://127.0.0.1:8000/oauth2callback/"
 
 API_SERVICE_NAME = 'youtube'
 API_VERSION = 'v3'
@@ -39,7 +38,8 @@ def oath_2_callback(request):
             scopes=None,
             state=request.session["state"]
         )
-    flow.redirect_uri = oauth_callback_redirect_uri
+
+    flow.redirect_uri = get_oauth_callback_redirect_uri(request)
 
     flow.fetch_token(code=request.GET.__getitem__("code"))
     credentials = flow.credentials
@@ -54,6 +54,11 @@ def oath_2_callback(request):
     return redirect(reverse("yt_login"))
 
 
+def get_oauth_callback_redirect_uri(request):
+    oauth_callback_redirect_uri = "http://127.0.0.1:8000/oauth2callback/"
+    return request.scheme + "://" + request.get_host() + '/oauth2callback/'
+
+
 def get_authorization_url_with_flow(request):
     if client_secret_config_var:
         flow = google_auth_oauthlib.flow.Flow.from_client_config(
@@ -64,7 +69,7 @@ def get_authorization_url_with_flow(request):
         flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
             client_secrets_file=client_secret,
             scopes=scopes)
-    flow.redirect_uri = oauth_callback_redirect_uri
+    flow.redirect_uri = get_oauth_callback_redirect_uri(request)
     authorization_url, state = flow.authorization_url(
         access_type='offline',
         include_granted_scopes='true')
