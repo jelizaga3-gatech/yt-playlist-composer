@@ -1,3 +1,5 @@
+import os
+
 import google_auth_oauthlib.flow
 from django.conf import settings
 from django.shortcuts import redirect
@@ -5,8 +7,11 @@ from django.urls import reverse
 
 app_root_path = settings.YT_PLAYLIST_DIR
 
-# These may need to be environment variables
-client_secret = app_root_path + "/tmp/client_secret.json"
+# If local machine, use client_secret file, if prod use config_var
+client_secret_config_var = os.environ.get('client_secret_google_api', None)
+if not client_secret_config_var:
+    client_secret = app_root_path + "/tmp/client_secret.json"
+
 oauth_callback_redirect_uri = "http://127.0.0.1:8000/oauth2callback/"
 
 API_SERVICE_NAME = 'youtube'
@@ -18,10 +23,18 @@ scopes = [
 
 
 def oath_2_callback(request):
-    flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
-        client_secrets_file=client_secret,
-        scopes=None,
-        state=request.session["state"])
+    if client_secret_config_var:
+        flow = google_auth_oauthlib.flow.Flow.from_client_config(
+            client_config=client_secret_config_var,
+            scopes=None,
+            state=request.session["state"]
+        )
+    else:
+        flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
+            client_secrets_file=client_secret,
+            scopes=None,
+            state=request.session["state"]
+        )
     flow.redirect_uri = oauth_callback_redirect_uri
 
     flow.fetch_token(code=request.GET.__getitem__("code"))
@@ -38,9 +51,15 @@ def oath_2_callback(request):
 
 
 def get_authorization_url_with_flow(request):
-    flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
-        client_secrets_file=client_secret,
-        scopes=scopes)
+    if client_secret_config_var:
+        flow = google_auth_oauthlib.flow.Flow.from_client_config(
+            client_config=client_secret_config_var,
+            scopes=scopes,
+        )
+    else:
+        flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
+            client_secrets_file=client_secret,
+            scopes=scopes)
     flow.redirect_uri = oauth_callback_redirect_uri
     authorization_url, state = flow.authorization_url(
         access_type='offline',
