@@ -115,7 +115,7 @@ class ListPlaylistPageView(generic.TemplateView):
                 playlist_item_generator = filter(lambda x: x["radio_value"] == radio_value, form)
                 playlist_item = next(playlist_item_generator)
 
-                context_save_playlist_meta(playlist_item, request)
+                context_save_playlist_meta(request=request, playlist_item=playlist_item)
 
                 return redirect(reverse("add_playlist_item"))
 
