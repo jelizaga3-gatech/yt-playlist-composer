@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Youtube Log In Page</title>
+    {% load bootstrap4 %}
+    {% bootstrap_css %}
+</head>
+<body>
+<div class="container h-100">
+
+    <form method="POST">
+        {% csrf_token %}
+        {% if credentials %}
+            <h3>You are now logged in as: <br> {{ username }} </h3>
+            <br>
+            <input type="submit" name="yt-list-playlist" value="View My Playlists"/>
+            <br>
+            <br>
+            <input type="submit" name="yt-upload-playlist" value="Upload Udacity Videos to My Playlist"/>
+            <br>
+        {% else %}
+            <h3>You are not logged in, please log-in. </h3>
+            <p>You will use Google's OAuth Client to log-in.</p>
+            {% buttons %}
+
+                <input type="submit" name="yt-login" value="Log In to YouTube"/>
+            {% endbuttons %}
+
+
+        {% endif %}
+    </form>
+</div>
+
+</body>
+</html>

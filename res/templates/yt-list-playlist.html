@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>List My Youtube Playlists</title>
+</head>
+<body>
+<div>
+    {% if credentials %}
+        <form method="POST">
+        {% csrf_token %}
+        <h3>You are logged in as {{ username }}</h3>
+        <h3>My Playlists</h3>
+        {% if list_exist %}
+
+            {% if form %}
+                {% for playlist_item in form %}
+                    <input type="radio" value="{{ playlist_item.radio_value }}" name="playlist_radio" checked/>
+                    {{ playlist_item.name }} [items = {{ playlist_item.playlist_item_count }}]
+                    <a href="https://www.youtube.com/playlist?list={{ playlist_item.item_id }}">See playlist</a>
+                    <br/>
+                {% endfor %}
+                {% if prev_token %}
+                    <button type="submit" name="prev-list" value={{ prev_token }}>Previous - Playlists</button>
+                {% endif %}
+                {% if next_token %}
+                    <button type="submit" name="next-list" value={{ next_token }}>Next - Playlists</button>
+                {% endif %}
+            {% else %}
+                <p>No playlists are available. See your playlists on YouTube.</p>
+            {% endif %}
+            <br><br>
+            <br/>
+            <input type="submit" name="add-list" value="Add A Playlist"/>
+            <br/><br/>
+            <input type="submit" name="add-items" value="Add Items to This Playlist"/>
+        {% else %}
+            <p>View playlists associated with this account.</p>
+            <input type="submit" name="get-list" value="What are My Playlists?"/>
+        {% endif %}
+    {% else %}
+        <h2>Unauthorized Access: Resource not found.</h2>
+    {% endif %}
+    </form>
+</div>
+</body>
+</html>

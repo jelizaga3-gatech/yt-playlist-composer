@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Instructions</title>
+</head>
+<body>
+<div>
+    <div>
+        <h1>Youtube Video Id Extractor</h1>
+        <h4>Description</h4>
+        <p>This simple tool lets you create a YouTube playlist from a Udacity course.</p>
+
+        {#        <p><em>Note:</em> This application does store cookies. Using this application  Use at your own risk. </p>#}
+        <p>Privacy Policy: You **must** log-in using Udacity's sign-in page to view your available courses. A 1 minute
+            timeout is set during this time frame.
+            You will also be asked to allow YouTube to authorize this application via the OAuth 2.0 authorization
+            process.
+            <br>
+            <br>
+            <strong>Cookies are stored for authentication. Use at your own risk.</strong></p>
+        <p>Disclaimer:
+            <br>Youtube does not endorse, nor is it affiliated in any way with the owner or any content of this
+            site.
+            <br>Udacity does not endorse, nor is it affiliated in any way with the owner or any content of this site.
+        </p>
+        <p>The following links are NOT allowed to be accessed: <a href="https://www.udacity.com/robots.txt">(see Udacity
+            robots.txt)</a>
+        </p>
+        <h4>Instructions</h4>
+        <ol>
+            <li>Click the Get Courses button. This will open a pop up to Udacity's Log In page. You will have 60
+                seconds to log in, otherwise you may have to start over.
+                Unfortunately, Udacity does not provide an easy way to access its resources.
+            </li>
+            <li>A list of available courses to select from will be shown below "Course List".</li>
+            <li>Please select a course and click "Get Lesson Links".</li>
+            <li>A list of available lessons will be shown below "Lesson Links".</li>
+            <li>Please select a lesson and click "Get YouTube Links".</li>
+        </ol>
+    </div>
+    <form action="{% url "yt_login" %}">
+
+        <input type="submit" value="Let's Get Started">
+    </form>
+
+</div>
+
+</body>
+</html>

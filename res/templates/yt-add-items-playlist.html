@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Playlist</title>
+</head>
+<body>
+{% if credentials %}
+    <form method="post" id="upload_form">
+        {% csrf_token %}
+        <div>
+            <h3>You are logged in as:</h3>
+            <h4>{{ username }}</h4>
+            <h3>
+                You are uploading to playlist (id):
+                {% if playlist_title %}
+                    <input type="hidden" name="playlist-id-1" value="{{ playlist_item_id }}"/>
+                    <a href="https://www.youtube.com/playlist?list={{ playlist_item_id }}">{{ playlist_title }}</a>
+
+                    </h3>
+                    <p>If you have multiple "Brands" associated with one account. Clicking the playlist might show a
+                        "not found" error. Switch to the correct Brand on YouTube to view the playlist. </p>
+                {% else %}
+                    <input type="text" name="playlist-id-2">
+                {% endif %}
+            <h4>To use this playlist, insert videos id appended to its desired playlist location. Video id are see after
+                ?v='' (see 2 - gl1aHhXnN1k):</h4>
+            <p> i.e.:
+                <br/>1. sampl3_1d1 <br/>2. https://www.youtube.com/watch?v=gl1aHhXnN1k <br> 3. sampl3_1d2 <br>
+                <br>
+            </p>
+            <p>Playlist indexing starts at 1.</p>
+            <textarea cols="50" rows="4" name="text_area_input" form="upload_form"> {{ video_ids }}
+        </textarea>
+            <br>
+            <button type="submit" name="upload_items" value={{ playlist_item_id }}>Upload Videos To Playlist</button>
+            {% if responses %}
+                <div>
+                    <h2>Results:</h2>
+                    <ul>
+                        <a href="https://www.youtube.com/playlist?list={{ playlist_id }}"><h4>Go To Playlist</h4></a>
+                        {% for response in responses %}
+                            <li>
+                                {% if response.kind %}
+                                    Video uploaded. Title: <strong>{{ response.snippet.title }} </strong><br> in
+                                    channel: {{ response.snippet.channelTitle }},  to playlistId:
+                                    {{ response.snippet.playlistId }}
+                                {% else %}
+                                    Something failed.
+                                {% endif %}
+                            </li>
+                            <br>
+                        {% endfor %}
+                    </ul>
+
+                </div>
+            {% endif %}
+        </div>
+    </form>
+{% else %}
+    <h3>Invalid Request.</h3>
+    <p> Error: {{ error_message }} </p>
+    <p>Please go back.</p>
+{% endif %}
+</body>

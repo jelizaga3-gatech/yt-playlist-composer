@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Playlist</title>
+</head>
+<body>
+{% if credentials %}
+    <form method="POST">
+        {% csrf_token %}
+        {% if insert_playlist_response %}
+            <h3>You created a new playlist: <a href="https://www.youtube.com/playlist?list={{ playlist_id }}">See it on
+                YouTube.</a></h3>
+            <p>Playlist Title: {{ title }}</p>
+            <input type="submit" name="view_all_playlists" value="View All Playlists">
+            <input type="submit" name="add_item_to_playlist" value="Add Items to this Playlist">
+        {% else %}
+            <h3>You are creating a Youtube Playlist for User:</h3>
+            <h5>{{ username }}</h5>
+            <h4>which will be listed under Channel:</h4>
+            <h5>{{ channel_name }}</h5>
+            <div>
+                <input type="text" name="request_title" value="Title"/>
+                <input type="submit" name="submit_" value="Create"/>
+            </div>
+        {% endif %}
+    </form>
+{% else %}
+    <h3>Invalid Request.</h3>
+    <p> Error: {{ error_message }} </p>
+    <p>Please go back.</p>
+{% endif %}
+</body>
+</html>
