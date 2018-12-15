@@ -55,7 +55,6 @@ def oath_2_callback(request):
 
 
 def get_oauth_callback_redirect_uri(request):
-    oauth_callback_redirect_uri = "http://127.0.0.1:8000/oauth2callback/"
     return request.scheme + "://" + request.get_host() + '/oauth2callback/'
 
 
