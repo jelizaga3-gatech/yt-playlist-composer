@@ -8,7 +8,6 @@ import sys
 import django_heroku
 import dj_database_url
 
-
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 YT_PLAYLIST_DIR = BASE_DIR + "/yt_playlist"
@@ -23,14 +22,14 @@ DEBUG = True
 ADMINS = ()
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql',
-    #     # 'NAME': '',
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'yt_playlist_composer',
+    }
     #     'USER': 'qafovdrntosnys',
     #     'PASSWORD': '3aee1775d8558b2d94efed6b2bb63b9f807a6a9a42a31928c910cfc9ff3cd3d0',
     #     'HOST': 'postgres://qafovdrntosnys:3aee1775d8558b2d94efed6b2bb63b9f807a6a9a42a31928c910cfc9ff3cd3d0@ec2-107-21-125-209.compute-1.amazonaws.com:5432/ddupevbl4fqvke',
     #     'PORT': '5432',
-    # }
     # 'default': {
     #     'ENGINE': 'django.db.backends.sqlite3',
     #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
@@ -263,8 +262,8 @@ BOOTSTRAP4.update({
 }
 )
 
-# Heroku Settings
-
-DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+# Heroku Setting
+if os.environ.get("DATABASE_URL", None):
+    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 
 django_heroku.settings(locals())
