@@ -3,58 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <title>Add Playlist</title>
+    {% load bootstrap4 %}
+    {% bootstrap_css %}
+    <link href='http://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
+
 </head>
+<style>
+    #summary-div {
+        padding:20px;
+    }
+
+    #upload-btn {
+        background-color: #ff0000;
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: bold;
+        font-family: "Roboto+Slab", "Lucida Grande", Verdana, Arial, sans-serif;
+        padding: 20px;
+        border-radius: 50px;
+        margin: 0 auto 50px;
+        display: block;
+    }
+
+    .upload-btn-a {
+        text-underline: none;
+        color: #ffffff;
+    }
+
+    .add-playlist-item-form-main-frame {
+        margin: 22px 20px;
+    }
+
+    .add-playlist-item-form {
+        border: 1px solid #dadce0;
+        border-radius: 8px;
+    }
+
+    .add-playlist-item-form p {
+        font-size: 14px;
+        max-width: 410px;
+    }
+
+    .first-header {
+        margin-top: 40px;
+    }
+
+    .headers-bold {
+        font-weight: bold;
+    }
+
+    .textarea-form {
+        font-size: 14px;
+        margin: 20px 0;
+    }
+
+    .title {
+        margin: 60px 0;
+    }
+
+    .center-a-tag {
+        display:inherit;
+    }
+</style>
 <body>
 {% if credentials %}
     <form method="post" id="upload_form">
         {% csrf_token %}
-        <div>
-            <h3>You are logged in as:</h3>
-            <h4>{{ username }}</h4>
-            <h3>
-                You are uploading to playlist (id):
-                {% if playlist_title %}
-                    <input type="hidden" name="playlist-id-1" value="{{ playlist_item_id }}"/>
-                    <a href="https://www.youtube.com/playlist?list={{ playlist_item_id }}">{{ playlist_title }}</a>
 
-                    </h3>
-                    <p>If you have multiple "Brands" associated with one account. Clicking the playlist might show a
-                        "not found" error. Switch to the correct Brand on YouTube to view the playlist. </p>
-                {% else %}
-                    <input type="text" name="playlist-id-2">
-                {% endif %}
-            <h4>To use this playlist, insert videos id appended to its desired playlist location. Video id are see after
-                ?v='' (see 2 - gl1aHhXnN1k):</h4>
-            <p> i.e.:
-                <br/>1. sampl3_1d1 <br/>2. https://www.youtube.com/watch?v=gl1aHhXnN1k <br> 3. sampl3_1d2 <br>
-                <br>
-            </p>
-            <p>Playlist indexing starts at 1.</p>
-            <textarea cols="50" rows="4" name="text_area_input" form="upload_form"> {{ video_ids }}
-        </textarea>
-            <br>
-            <button type="submit" name="upload_items" value={{ playlist_item_id }}>Upload Videos To Playlist</button>
-            {% if responses %}
-                <div>
-                    <h2>Results:</h2>
-                    <ul>
-                        <a href="https://www.youtube.com/playlist?list={{ playlist_id }}"><h4>Go To Playlist</h4></a>
-                        {% for response in responses %}
-                            <li>
-                                {% if response.kind %}
-                                    Video uploaded. Title: <strong>{{ response.snippet.title }} </strong><br> in
-                                    channel: {{ response.snippet.channelTitle }},  to playlistId:
-                                    {{ response.snippet.playlistId }}
-                                {% else %}
-                                    Something failed.
-                                {% endif %}
-                            </li>
-                            <br>
-                        {% endfor %}
-                    </ul>
+        <div class="container ">
 
+            <div class="row add-playlist-item-form-main-frame">
+                <div class="title">
+                    <h1 class="headers-bold">Add Batch Videos to Playlist by Id</h1>
                 </div>
-            {% endif %}
+
+                <div class="add-playlist-item-form col-md-7">
+                    <div class="container">
+                        <h2 class="first-header headers-bold">Instructions</h2>
+                        <p>
+                            In the textbox below, write a list of YouTube video ids prepended
+                            by the desired order. A video id example: M7FIvfx5J10. You can also
+                        provide the full link address: https://www.youtube.com/watch?v=M7FIvfx5J10
+                        <p>
+                            To insert a video into the playlist as the first item, write:<br> '1. M7FIvfx5J10'.
+                        </p>
+                        <p>
+                            This example adds the video of the Volvo Trucks <a
+                                href="https://www.youtube.com/watch?v=M7FIvfx5J10"> "Epic Split" commercial</a>,
+                            featuring Jean-Claude Van Damme to the specified playlist.
+                        </p>
+                    </div>
+                    <div class="container">
+                        <textarea class="textarea-form" placeholder="{{ video_ids }}" cols="55" rows="4"
+                                  name="text_area_input"
+                                  form="upload_form"></textarea>
+
+                    </div>
+                    <button id='upload-btn' type="submit" name="upload_items" value={{ playlist_item_id }}>
+                        <a class="upload-btn-a" href="">Upload Videos To Playlist</a>
+                    </button>
+                </div>
+
+                <div class="col-md-4 offset-1">
+                    <div id="summary-div" class="add-playlist-item-form ">
+
+                        <h2 class="first-header headers-bold text-center">Summary</h2>
+                        <h5 class="text-center">Welcome, {{ username }}!</h5>
+                        <h5 class="text-center">
+                            <br> The videos will be uploaded to playlist:
+                        </h5>
+                        {% if playlist_title %}
+                            <input type="hidden" name="playlist-id-1" value="{{ playlist_item_id }}"/>
+                            <a class="center-a-tag text-center" href="https://www.youtube.com/playlist?list={{ playlist_item_id }}">{{ playlist_title }}</a>
+
+                            <p>
+                            <br><br><br>
+                                If the playlist is "not found", try switching to the correct Brand on YouTube to view the
+                                playlist.
+                            </p>
+                        {% else %}
+                            <input type="text" name="playlist-id-2">
+                            <p>
+                            <br>
+                            Type playlist id into the textbox above.
+                            </p>
+                        {% endif %}
+                    </div>
+
+                    <br>
+                    {% if responses %}
+                        <div>
+                            <h2>Results:</h2>
+                            <ul>
+                                <a href="https://www.youtube.com/playlist?list={{ playlist_id }}"><h4>Go To
+                                    Playlist</h4>
+                                </a>
+                                {% for response in responses %}
+                                    <li>
+                                        {% if response.kind %}
+                                            Video uploaded. Title: <strong>{{ response.snippet.title }} </strong>
+                                            <br> in
+                                            channel: {{ response.snippet.channelTitle }},  to playlistId:
+                                            {{ response.snippet.playlistId }}
+                                        {% else %}
+                                            Something failed.
+                                        {% endif %}
+                                    </li>
+                                    <br>
+                                {% endfor %}
+                            </ul>
+
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </form>
 {% else %}

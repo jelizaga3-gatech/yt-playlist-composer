@@ -210,7 +210,7 @@ class AddPlaylistItemsPageView(generic.TemplateView):
 
     def get(self, request, *args, **kwargs):
         context = {}
-        video_ids = "1- f6sBPHb1Vl4, \n" + " 3     - https://www.youtube.com/watch?v=p-uR8BVFcPg "
+        video_ids = "1 - M7FIvfx5J10, \n" + "3 - https://www.youtube.com/watch?v=M7FIvfx5J10  "
         # video_ids = request.session.get("youtube-links","Failed to get Youtube Links")
         context.update(video_ids=video_ids)
         if request.session.__contains__("credentials"):

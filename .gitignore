@@ -3,6 +3,7 @@
 .DS_Store
 */tmp/
 yt_playlist/driver/Creds.py
+staticfiles
 
 # PyCharm
 .idea 
