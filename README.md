@@ -1,4 +1,18 @@
-# yt-playlist-compiler
+# YouTube-Playlist-Compiler
+Batch upload YouTube Videos with one easy click. 
+
+The main goal of this project is to allow anybody with a Google account to create a playlist and add multiple videos to the playlist at once. 
+
+Hope it helps! More coming soon.  
+
+## Demo Site
+https://youtube-playlist-composer.herokuapp.com/
+
+## Feedback and Features
+@ <jelizaga3@gatech.edu>
+
+# Miscellaneous 
+
 # Heroku Pains
 `heroku run python manage.py migrate` to do a Heroku db migration.
 ## PostgreSQL pains
