@@ -3,32 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <title>Add Playlist</title>
+    {% load bootstrap4 %}
+    {% bootstrap_css %}
+    <link href='http://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
 </head>
+
+<style>
+
+
+    .click-button-ellipses:hover {
+        background: rgb(208, 37, 37);
+        color: #ffffff;
+        box-shadow: 0 10px 25px -2px rgba(208, 37, 37, 0.6);
+    }
+
+    .click-button-ellipses:focus {
+        outline: none;
+    }
+
+    .click-button-ellipses {
+        background: #d02525;
+        color: #ffffff !important;
+        display: inline-block;
+        font-size: 15px;
+        font-weight: 500;
+        height: 50px;
+        line-height: 0.8;
+        padding: 18px 30px;
+        text-transform: capitalize;
+        letter-spacing: 0.5px;
+        border: 0px !important;
+        cursor: pointer;
+        border-radius: 100px;
+
+    }
+
+    .first-header {
+        text-transform: capitalize;
+        margin-top: 30px;
+    }
+
+    .list-playlist-center-btn {
+        margin: 30px auto;
+    }
+
+    .list-playlist-center-btn > input {
+        display: block;
+        margin: 0 auto;
+    }
+
+    .list-playlist-form-main-frame {
+        margin: 22px 20px;
+    }
+
+    .title {
+        margin: 30px 0;
+        width: 90%;
+    }
+
+    .headers-bold {
+        font-weight: bold;
+    }
+
+    .list-playlist-form {
+        padding: 10px;
+    }
+
+    .card-form {
+        border: 1px solid #dadce0;
+        border-radius: 8px;
+        height: fit-content;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, .1);
+    }
+
+    .card-group {
+        padding: 00px 40px 30px;
+    }
+
+    .card-group p {
+        margin: 10px 0;
+        display: inline;
+        float: left;
+    }
+
+    .card-group a {
+        display: inline;
+        float: right;
+        margin: 10px 10px 10px 0;
+    }
+</style>
 <body>
 {% if credentials %}
     <form method="POST">
         {% csrf_token %}
+
+
         {% if insert_playlist_response %}
-            <h3>You created a new playlist: <a href="https://www.youtube.com/playlist?list={{ playlist_id }}">See it on
-                YouTube.</a></h3>
-            <p>Playlist Title: {{ title }}</p>
-            <input type="submit" name="view_all_playlists" value="View All Playlists">
-            <input type="submit" name="add_item_to_playlist" value="Add Items to this Playlist">
+            <div class="container">
+                <div class="row list-playlist-form-main-frame">
+                    <div class="title">
+                        <h1 class="headers-bold">Playlist Creation</h1>
+                    </div>
+                    <br/>
+                    <div class="col-md-7 card-form list-playlist-form">
+                        <div class="container card-group ">
+                            <h2 class="headers-bold first-header">A New Playlist Was Created</h2>
+                            <h3>
+                                Playlist Title: {{ title }}
+                                <br>
+                                <a
+                                        href="https://www.youtube.com/playlist?list={{ playlist_id }}">See it on
+                                    YouTube.</a>
+                            </h3>
+                            <div class="list-playlist-center-btn">
+                                <input type="submit" class="click-button-ellipses" name="add_item_to_playlist"
+                                       value="Add Items to this Playlist">
+                            </div>
+                            <div class="list-playlist-center-btn">
+                                <input type="submit" class="click-button-ellipses" name="view_all_playlists"
+                                       value="View All Playlists">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         {% else %}
-            <h3>You are creating a Youtube Playlist for User:</h3>
-            <h5>{{ username }}</h5>
-            <h4>which will be listed under Channel:</h4>
-            <h5>{{ channel_name }}</h5>
-            <div>
-                <input type="text" name="request_title" value="Title"/>
-                <input type="submit" name="submit_" value="Create"/>
+            <div class="container">
+                <div class="row list-playlist-form-main-frame">
+                    <div class="title">
+                        <h1 class="headers-bold">Playlist Creation</h1>
+                    </div>
+                    <br/>
+                    <div class="col-md-7 card-form list-playlist-form">
+                        <div class="container card-group ">
+                            <h2 class="headers-bold first-header">Add A playlist </h2>
+                            <input type="text" class="form-control" name="request_title" value="Title"/>
+                            <div class="list-playlist-center-btn">
+                                <input type="submit" class="click-button-ellipses" name="submit_"
+                                       value="+ Create Playlist"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="offset-1 col-md-4 card-form">
+                        <div class="container card-group">
+                            <h2 class="text-center first-header headers-bold">Profile</h2>
+                            <h5 class="text-center">You Are Logged In As {{ username }}!</h5>
+                        </div>
+                    </div>
+                </div>
             </div>
         {% endif %}
     </form>
+
 {% else %}
+    <div class="container">
     <h3>Invalid Request.</h3>
     <p> Error: {{ error_message }} </p>
     <p>Please go back.</p>
+    </div>
 {% endif %}
 </body>
 </html>

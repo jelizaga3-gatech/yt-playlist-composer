@@ -25,8 +25,13 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "yt_playlist.settings")
 
 # When running locally, disable OAuthlib's HTTPs verification.
 # ACTION ITEM for developers:
-#     When running in production *do not* leave this option enabled.
-os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+if os.environ.get("OATHLIB_INSECURE_TRANSPORT", None):
+    #     When running in production *do not* leave this option enabled.
+    pass
+else:
+    pass
+    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+
 
 # This application object is used by any WSGI server configured to use this
 # file. This includes Django's development server, if the WSGI_APPLICATION

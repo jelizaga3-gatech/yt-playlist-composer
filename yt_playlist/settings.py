@@ -6,6 +6,7 @@ import os
 import sys
 
 import django_heroku
+import dj_database_url
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
@@ -20,12 +21,6 @@ DEBUG = True
 
 ADMINS = ()
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
@@ -35,7 +30,7 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
 # In a Windows environment this must be set to your system time zone.
-TIME_ZONE = "Europe/Amsterdam"
+TIME_ZONE = "America/Phoenix"
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -76,6 +71,7 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    BASE_DIR + "/res/static",
 )
 
 # List of finder classes that know how to find static files in
@@ -253,4 +249,15 @@ BOOTSTRAP4.update({
 }
 )
 
+# Heroku Setting
+
+DATABASES = {}
+
+if os.environ.get("DATABASE_URL", None): # IF prod
+    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+else:
+    DATABASES['default'] =  {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'yt_playlist_composer',
+    }
 django_heroku.settings(locals())
