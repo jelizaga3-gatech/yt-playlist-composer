@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Youtube Log In Page</title>
+    {% load bootstrap4 %}
+    {% bootstrap_css %}
+    {% load staticfiles %}
+    <link href='http://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
+</head>
+<body>
+
+<style>
+
+
+    /* User is Logged In */
+    h3 {
+        font-family: "Roboto Slab", sans-serif;
+        font-size: 1.5em;
+        font-weight: bold;
+        text-align: left;
+        margin: 0 auto;
+        display: block;
+        width: 150px;
+    }
+
+    .click-button-ellipses:hover {
+        background: rgb(208, 37, 37);
+        color: #ffffff;
+        box-shadow: 0 10px 25px -2px rgba(208, 37, 37, 0.6);
+    }
+
+    .click-button-ellipses:focus {
+        outline: none;
+    }
+
+    .click-button-ellipses {
+        background: #d02525;
+        color: #ffffff !important;
+        display: inline-block;
+        font-size: 15px;
+        font-weight: 500;
+        height: 50px;
+        line-height: 0.8;
+        padding: 18px 30px;
+        text-transform: capitalize;
+        border-radius: 1px;
+        letter-spacing: 0.5px;
+        border: 0px !important;
+        cursor: pointer;
+        border-radius: 100px;
+
+    }
+
+    .card {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 300px;
+        min-height: 400px;
+        background: #fff;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, .1);
+        border-radius: 10px;
+        transition: 0.5s;
+    }
+
+    .card:hover {
+        box-shadow: 0 30px 70px rgba(0, 0, 0, .2);
+    }
+
+    .card .box {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+        text-align: center;
+        padding: 20px;
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    .card .box .img {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+
+    .card .box .img img {
+        width: 100%;
+        height: 100%;
+    }
+
+    .card .box h2 {
+        font-size: 20px;
+        color: #262626;
+        margin: 20px auto;
+    }
+
+    .card .box h2 span {
+        font-size: 14px;
+        background: #e91e63;
+        color: #fff;
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 15px;
+    }
+
+    .card .box p {
+        color: #262626;
+    }
+
+    .card .box span {
+        display: inline-flex;
+    }
+
+    .card .box ul {
+        margin: 0;
+        padding: 0;
+    }
+
+    .card .box ul li {
+        list-style: none;
+        float: left;
+    }
+
+    .card .box ul li a {
+        display: block;
+        color: #aaa;
+        margin: 0 10px;
+        font-size: 20px;
+        transition: 0.5s;
+        text-align: center;
+    }
+
+    .card .box ul li:hover a {
+        color: #e91e63;
+        transform: rotateY(360deg);
+    }
+
+    /* NOT Logged In */
+    .login-main {
+        margin: 30px auto 0px;
+        max-width: 450px;
+        border: 1px solid #dadce0;
+        border-radius: 8px;
+    }
+
+    .login-desc {
+        font-size: 14px;
+    }
+
+    .login-frame {
+        margin: 0 auto;
+        padding: 45px 20px 0;
+    }
+
+    .sign-in-btn {
+        margin: 30px auto;
+        display: block;
+    }
+
+    .title {
+        width: 100%;
+        text-align: center;
+    }
+
+    .superscript {
+        font-size: 10px;
+    }
+
+    .trademark {
+        padding: 50px 0 0 0;
+        font-size: 8px;
+        text-align: center;
+    }
+</style>
+
+<div class="container h-100 ">
+
+    <form method="POST">
+        {% csrf_token %}
+        {% if credentials %}
+            <div class="card">
+                <div class="box">
+
+                    <h3>Welcome, <br> {{ username }}! </h3>
+                    <br>
+                    <br>
+                    <input type="submit" class="click-button-ellipses" name="yt-list-playlist" value="View Playlists"/>
+                    <br>
+                    {#         Useful iff interface between Udacity and app exists           #}
+                    {#                    <input type="submit" class="click-button" name="yt-upload-playlist"#}
+                    {#                           value="Upload Udacity Videos to My Playlist"/>#}
+                    <br>
+                </div>
+            </div>
+        {% else %}
+            <div class="container login-main">
+                <div class="login-frame">
+                    <h3 class="title">YouTube<sup class="superscript"><sup><sup>TM</sup></sup></sup>
+                        Playlist Compiler</h3>
+                    <div class="container">
+                        <input class="sign-in-btn" src="{% static "web/1x/btn_google_signin_dark_normal_web.png" %}"
+                               type="image" name="yt-login" value="Google Sign-In"/>
+                    </div>
+                    <p class="trademark">YouTube is not affiliated with this website. Please use at your own
+                        discretion.</p>
+                </div>
+            </div>
+        {% endif %}
+    </form>
+</div>
+
+</body>
+</html>
