@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Instructions</title>
+    {% load bootstrap4 %}
+    {% bootstrap_css %}
+</head>
+<style>
+    .click-button-ellipses:hover {
+        background: rgb(208, 37, 37);
+        color: #ffffff;
+        box-shadow: 0 10px 25px -2px rgba(208, 37, 37, 0.6);
+    }
+
+    .click-button-ellipses:focus {
+        outline: none;
+    }
+
+    .click-button-ellipses {
+        background: #d02525;
+        color: #ffffff !important;
+        display: inline-block;
+        font-size: 15px;
+        font-weight: 500;
+        height: 50px;
+        line-height: 0.8;
+        padding: 18px 30px;
+        text-transform: capitalize;
+        letter-spacing: 0.5px;
+        border: 0px !important;
+        cursor: pointer;
+        border-radius: 100px;
+
+    }
+</style>
+<body>
+<div>
+    <div class="container">
+        <h1>Youtube Video Uploader</h1>
+        <h4>What is this?</h4>
+        <p>This simple tool lets you create a YouTube playlist from a list of videos.</p>
+        <p>This application requires access to a Google account.</p>
+        <p>This tool can be interfaced with applications that generate YouTube playlists. Send me a recommendation
+            here.</p>
+
+        {#        <p><em>Note:</em> This application does store cookies. Using this application  Use at your own risk. </p>#}
+        <p>Privacy Policy:
+            You will also be asked to log in to your Google account via YouTube to authorize this application.
+            <br>
+            <br>
+            <strong>Cookies are stored for authentication. Use at your own risk.</strong></p>
+        <p>Disclaimer:
+            <br>YouTube does not endorse, nor is it affiliated in any way with the owner or any content on this
+            site.
+        </p>
+        </p>
+        <h4>Instructions</h4>
+        <ol>
+            <li>Log in.</li>
+            <li>View or create a playlist.</li>
+            <li>Select a playlist to upload to.</li>
+            <li>Add videos and upload.</li>
+            <li>Provide feedback or say thanks, if it helped. :-)</li>
+        </ol>
+
+        <form action="{% url "yt_login" %}">
+
+            <input class="click-button-ellipses" type="submit" value="Let's Get Started">
+        </form>
+    </div>
+
+</div>
+
+</body>
+</html>

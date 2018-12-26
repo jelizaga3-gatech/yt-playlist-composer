@@ -1,3 +1,16 @@
+#--------------------------------------------------------------------------#
+## User Defined ##
+.DS_Store
+*/tmp/
+yt_playlist/driver/Creds.py
+staticfiles
+
+# PyCharm
+.idea 
+
+#--------------------------------------------------------------------------#
+## Pre-defined ##
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>List My Youtube Playlists</title>
+    {% load bootstrap4 %}
+    {% bootstrap_css %}
+    <link href='http://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
+</head>
+
+<style>
+    #prev-btn-div {
+        display: inline-block;
+        float: left;
+    }
+
+    #next-btn-div {
+        display: inline-block;
+        float: right;
+    }
+
+    .click-button-rect:hover {
+        background: rgb(0, 110, 255);
+        color: #ffffff;
+        box-shadow: 0 10px 25px -2px rgba(0, 110, 255, 0.6);
+    }
+
+    .click-button-rect:focus {
+        outline: none;
+    }
+
+    .click-button-rect {
+        background: #006eff;
+        color: #ffffff !important;
+        display: inline-block;
+        font-size: 15px;
+        font-weight: 500;
+        height: 25px;
+        line-height: 3px;
+        padding: 18px 30px;
+        text-transform: capitalize;
+        letter-spacing: 0.5px;
+        border: 0px !important;
+        cursor: pointer;
+    }
+
+    .click-button-ellipses:hover {
+        background: rgb(208, 37, 37);
+        color: #ffffff;
+        box-shadow: 0 10px 25px -2px rgba(208, 37, 37, 0.6);
+    }
+
+    .click-button-ellipses:focus {
+        outline: none;
+    }
+
+    .click-button-ellipses {
+        background: #d02525;
+        color: #ffffff !important;
+        display: inline-block;
+        font-size: 15px;
+        font-weight: 500;
+        height: 50px;
+        line-height: 0.8;
+        padding: 18px 30px;
+        text-transform: capitalize;
+        letter-spacing: 0.5px;
+        border: 0px !important;
+        cursor: pointer;
+        border-radius: 100px;
+    }
+
+    .first-header {
+        text-transform: capitalize;
+        margin-top: 30px;
+    }
+
+    .list-playlist-center-btn {
+        margin: 30px auto;
+    }
+
+    .list-playlist-center-btn > input {
+        display: block;
+        margin: 0 auto;
+    }
+
+    .list-playlist-form-main-frame {
+        margin: 22px 20px;
+    }
+
+    .title {
+        margin: 30px 0;
+        width: 90%;
+    }
+
+    .headers-bold {
+        font-weight: bold;
+    }
+
+    .list-playlist-form {
+        padding-left: 30px;
+    }
+
+    .card-form {
+        border: 1px solid #dadce0;
+        border-radius: 8px;
+        height: fit-content;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, .1);
+    }
+
+    .card-group {
+        padding-left: 30px;
+    }
+
+    .card-group p {
+        margin: 10px 0;
+        display: inline;
+        float: left;
+    }
+
+    .card-group a {
+        display: inline;
+        float: right;
+        margin: 10px 10px 10px 0;
+    }
+
+    .list-item-p {
+    {#min-width: 75px;#}{#padding-left: 20px;#}
+    }
+
+    .page-token-div {
+        max-width: 390px;
+        width: 100%;
+    }
+
+    /* Radio Selection */
+    .checkable-radio p {
+        display: inline-block;
+    }
+
+    .checkable-radio div {
+        clear: both;
+        overflow: hidden;
+    }
+
+    .checkable-radio label {
+        width: 390px;
+        border-radius: 3px;
+        border: 1px solid #D1D3D4;
+        font-weight: normal;
+    }
+
+    .checkable-radio input[type="radio"]:empty,
+    .checkable-radio input[type="checkbox"]:empty {
+        display: none;
+    }
+
+    .checkable-radio input[type="radio"]:empty ~ label,
+    .checkable-radio input[type="checkbox"]:empty ~ label {
+        position: relative;
+        text-indent: 3.25em;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    .checkable-radio input[type="radio"]:empty ~ label:before,
+    .checkable-radio input[type="checkbox"]:empty ~ label:before {
+        position: absolute;
+        display: block;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        content: '';
+        width: 2.5em;
+        background: #D1D3D4;
+        border-radius: 3px 0 0 3px;
+    }
+
+    .checkable-radio input[type="radio"]:hover:not(:checked) ~ label,
+    .checkable-radio input[type="checkbox"]:hover:not(:checked) ~ label {
+        color: #888;
+    }
+
+    .checkable-radio input[type="radio"]:hover:not(:checked) ~ label:before,
+    .checkable-radio input[type="checkbox"]:hover:not(:checked) ~ label:before {
+        text-indent: .9em;
+        color: #C2C2C2;
+    }
+
+    .checkable-radio input[type="radio"]:checked ~ label,
+    .checkable-radio input[type="checkbox"]:checked ~ label {
+        color: #777;
+    }
+
+    .checkable-radio input[type="radio"]:checked ~ label:before,
+    .checkable-radio input[type="checkbox"]:checked ~ label:before {
+        text-indent: .9em;
+        color: #333;
+        background-color: #ccc;
+    }
+
+    .checkable-radio input[type="radio"]:focus ~ label:before,
+    .checkable-radio input[type="checkbox"]:focus ~ label:before {
+        box-shadow: 0 0 0 3px #999;
+    }
+
+    .checkable-radio-success input[type="radio"]:checked ~ label:before,
+    .checkable-radio-success input[type="checkbox"]:checked ~ label:before {
+        color: #fff;
+        background-color: #5cb85c;
+    }
+
+    .body-family {
+        font-family: "Roboto Slab", "Lucida Grande", Verdana, Arial, sans-serif;
+    }
+
+</style>
+
+<body class="body-family">
+<div>
+    {% if credentials %}
+        <form method="POST">
+        {% csrf_token %}
+        <div class="container">
+            <div class="row list-playlist-form-main-frame">
+                <div class="title">
+                    <h1 class="headers-bold">Playlist Selection</h1>
+                </div>
+                <br/>
+                <div class="col-md-7 card-form list-playlist-form">
+
+                    {% if list_exist %}
+
+                        <div class="container card-group ">
+                            <h2 class="headers-bold first-header">Add to playlist </h2>
+                            {% if form %}
+                                <div class="checkable-radio">
+                                    {% for playlist_item in form %}
+                                        <div class="checkable-radio-success">
+                                            <input type="radio" value="{{ playlist_item.radio_value }}"
+                                                   name="playlist_radio" id="radio{{ playlist_item.radio_value }}"
+                                                   checked/>
+
+                                            <label for="radio{{ playlist_item.radio_value }}">
+                                                <p class="list-item-p">{{ playlist_item.name }}</p>
+                                                <a href="https://www.youtube.com/playlist?list={{ playlist_item.item_id }}">Visit
+                                                    playlist</a>
+                                                <br/>
+                                            </label>
+
+
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="page-token-div">
+
+                                    <div class="">
+
+                                        {% if prev_token %}
+                                            <div id="prev-btn-div">
+
+                                                <button type="submit" class="click-button-rect" name="prev-list"
+                                                        value={{ prev_token }}>
+                                                    Previous
+                                                </button>
+                                            </div>
+                                        {% endif %}
+                                        {% if next_token %}
+                                            <div id="next-btn-div">
+                                                <button type="submit" class="click-button-rect" name="next-list"
+                                                        value={{ next_token }}>
+                                                    Next
+                                                </button>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="list-playlist-center-btn">
+                                    <input type="submit" class="click-button-ellipses" name="add-items"
+                                           value="Select Playlist"/>
+                                </div>
+                            {% else %}
+                                <p>No playlists are associated with this YouTube (brand) account.</p>
+                            {% endif %}
+
+                        </div>
+                    {% else %}
+                        <p>Something went wrong. Go back.</p>
+                    {% endif %}
+
+                </div>
+
+                <div class="offset-1 col-md-4 card-form">
+                    <div class="container card-group">
+                        <h2 class="text-center first-header headers-bold">Profile</h2>
+                        <h5 class="text-center">Welcome, {{ username }}!</h5>
+                        <br/>
+                        <div class="list-playlist-center-btn">
+                            <input type="submit" class="click-button-ellipses" name="add-list"
+                                   value="+ Create Playlist"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    {% else %}
+        <h2>Unauthorized Access: Resource not found.</h2>
+    {% endif %}
+    </form>
+</div>
+</body>
+</html>
