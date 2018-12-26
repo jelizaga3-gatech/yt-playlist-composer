@@ -9,6 +9,10 @@
 </head>
 
 <style>
+    .page-container  {
+        min-width: 970px !important;
+    }
+
     #prev-btn-div {
         display: inline-block;
         float: left;
@@ -98,7 +102,12 @@
     }
 
     .list-playlist-form {
+        max-width: 530px;
         padding-left: 30px;
+    }
+
+    .profile-form {
+        max-width: 360px;
     }
 
     .card-form {
@@ -224,7 +233,7 @@
     {% if credentials %}
         <form method="POST">
         {% csrf_token %}
-        <div class="container">
+        <div class="container page-container">
             <div class="row list-playlist-form-main-frame">
                 <div class="title">
                     <h1 class="headers-bold">Playlist Selection</h1>
@@ -293,7 +302,7 @@
 
                 </div>
 
-                <div class="offset-1 col-md-4 card-form">
+                <div class="offset-1 col-md-4 card-form profile-form">
                     <div class="container card-group">
                         <h2 class="text-center first-header headers-bold">Profile</h2>
                         <h5 class="text-center">Welcome, {{ username }}!</h5>
