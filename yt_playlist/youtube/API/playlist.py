@@ -9,7 +9,6 @@ import yt_playlist.views
 def get_playlists(client, request, page_token):
     try:
         if page_token:
-            pass
             query = client.playlists().list(
                 part='snippet,contentDetails',
                 mine='true',
@@ -20,14 +19,12 @@ def get_playlists(client, request, page_token):
                 part='snippet,contentDetails',
                 mine='true',
             )
-
         response = query.execute()
     except RefreshError:
         request.session.clear()
         return yt_playlist.views.ListPlaylistPageView.as_view().post(request=request)
     except HttpError as http_error:
         response = http_error.resp
-
         # return
     except Exception as e:
         # Log Error
@@ -125,7 +122,6 @@ def upload_to_playlist(client, request, playlist_id, video_id, playlist_index):
     try:
         response = client.playlistItems().insert(
             part="snippet",
-            # body=resource,
             body=dict(
                 snippet=dict(
                     playlistId=playlist_id,

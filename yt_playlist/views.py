@@ -61,6 +61,9 @@ class ListPlaylistPageView(generic.TemplateView):
 
             context_save_username(request=request, session_credentials=session_credentials_, context=context)
 
+            self.get_playlist_items(request=request, session_credentials=session_credentials_, context=context,
+                                    page_token=None)
+
         return render(request, template_name=self.template_name, context=context)
 
     def post(self, request):
@@ -71,7 +74,6 @@ class ListPlaylistPageView(generic.TemplateView):
             post_type = request.POST
 
             if "get-list" in post_type or 'next-list' in post_type or 'prev-list' in post_type:
-                client = playlist.get_api_client(session_credentials)
 
                 next_val = request.POST.get('next-list', )
                 prev_val = request.POST.get('prev-list', )
@@ -81,30 +83,13 @@ class ListPlaylistPageView(generic.TemplateView):
                 else:
                     page_token = None
 
-                playlist_list_response = playlist.get_playlists(client=client, request=request, page_token=page_token)
+                context_save_username(request=request, session_credentials=session_credentials, context=context)
 
-                playlist_items = playlist_list_response["items"]
+                self.get_playlist_items(request, session_credentials, context, page_token)
 
-                playlist_form_items = []
-                for playlist_item in playlist_items:
-                    item = dict(name=playlist_item["snippet"].get("title", ),
-                                playlist_item_count=playlist_item["contentDetails"].get("itemCount", ),
-                                radio_value=len(playlist_form_items),
-                                item_id=playlist_item["id"])
-                    form_selection.YouTubeItems(item)
-                    playlist_form_items.append(item)
-
-                context["list_exist"] = True
-                context["next_token"] = playlist_list_response.get("nextPageToken", )
-                context["prev_token"] = playlist_list_response.get("prevPageToken", )
-
-                if playlist_form_items:
-                    context["form"] = playlist_form_items
-                    request.session["form"] = playlist_form_items
-                    return render(request, template_name=self.template_name, context=context)
+                return render(request, template_name=self.template_name, context=context)
 
             elif "add-list" in post_type:
-                request.session["add-playlist-flag"] = True
                 return redirect(reverse("list_playlist/add"))
 
             elif "add-items" in post_type:
@@ -121,14 +106,30 @@ class ListPlaylistPageView(generic.TemplateView):
 
         return render(request, template_name=self.template_name, context=context)
 
+    def get_playlist_items(self, request, session_credentials, context, page_token):
+        client = playlist.get_api_client(session_credentials)
+        playlist_list_response = playlist.get_playlists(client=client, request=request, page_token=page_token)
+        playlist_items = playlist_list_response["items"]
+        playlist_form_items = []
+        for playlist_item in playlist_items:
+            item = dict(name=playlist_item["snippet"].get("title", ).ljust(10),
+                        playlist_item_count=playlist_item["contentDetails"].get("itemCount", ),
+                        radio_value=len(playlist_form_items),
+                        item_id=playlist_item["id"])
+            form_selection.YouTubeItems(item)
+            playlist_form_items.append(item)
+        context["list_exist"] = True
+        context["next_token"] = playlist_list_response.get("nextPageToken", )
+        context["prev_token"] = playlist_list_response.get("prevPageToken", )
+        if playlist_form_items:
+            context["form"] = playlist_form_items
+            request.session["form"] = playlist_form_items
+
 
 class AddPlaylistPageView(generic.TemplateView):
     template_name = "yt-add-playlist.html"
 
     def get(self, request, *args, **kwargs):
-        valid_request = request.session.pop("add-playlist-flag", None)
-        if not valid_request:
-            return redirect(reverse("yt_login"))
         context = {}
         if request.session.__contains__("credentials"):
             # Check for Valid Yt User
@@ -137,6 +138,9 @@ class AddPlaylistPageView(generic.TemplateView):
 
             response_key = "insert_playlist_response"
             if response_key in request.session:
+                valid_request = request.session.pop("add-playlist-flag", None)
+                if not valid_request:
+                    return redirect(reverse("yt_login"))
                 response = request.session.pop(response_key)
                 context[response_key] = response
 
@@ -149,7 +153,6 @@ class AddPlaylistPageView(generic.TemplateView):
                 playlist_item = dict(item_id=playlist_id, name=title)
                 context_save_playlist_meta(request=request, playlist_item=playlist_item)
             else:
-
                 # Get Client
                 client = playlist.get_api_client(session_credentials=session_credentials_)
 
@@ -210,16 +213,11 @@ class AddPlaylistItemsPageView(generic.TemplateView):
 
     def get(self, request, *args, **kwargs):
         context = {}
-        video_ids = "1 - M7FIvfx5J10, \n" + "3 - https://www.youtube.com/watch?v=M7FIvfx5J10  "
-        # video_ids = request.session.get("youtube-links","Failed to get Youtube Links")
-        context.update(video_ids=video_ids)
         if request.session.__contains__("credentials"):
             # Check for Valid Yt User
             session_credentials_ = request.session["credentials"]
             context.update(credentials=session_credentials_)
-            context_save_username(request=request, session_credentials=session_credentials_, context=context)
-            context["playlist_item_id"] = request.session.get("playlist_id", )
-            context["playlist_title"] = request.session.get("playlist_title", )
+            self.context_display_username_playlist(context, request, session_credentials_)
         return render(request, template_name=self.template_name, context=context)
 
     def post(self, request):
@@ -230,25 +228,35 @@ class AddPlaylistItemsPageView(generic.TemplateView):
             context["credentials"] = session_credentials_
             client = playlist.get_api_client(session_credentials_)
 
-            # if "" in request.
-
             if 'upload_items' in request.POST:
                 text_area_input = request.POST.get("text_area_input", )
                 videos = []
                 read_lines = text_area_input.split('\r\n')
+                if not read_lines[0].strip():
+                    context["validation_error"] = "The field below cannot be empty. See instructions above."
+                    self.context_display_username_playlist(context, request, session_credentials_)
+                    return render(request, template_name=self.template_name, context=context)
                 for line in read_lines:
                     if line.strip():
                         try:
+                            playlist_index, video_id_str = None, None
+
                             line_split = line.split("-", 1)
                             stripped_index = line_split[0].strip()
                             playlist_index = int(stripped_index)
                             raw_video_id = line_split[1].strip().rstrip(',')
                             video_id_str = helper.video_id(raw_video_id)
-                        except ValueError:
-                            print("Failed to parse playlist index.")
+                        except (ValueError, IndexError):
+                            context[
+                                "validation_error"] = "Videos could not be parsed. Please read the instructions carefully or try again."
+                            self.context_display_username_playlist(context, request, session_credentials_)
+                            return render(request, template_name=self.template_name, context=context)
+                        except Exception:
+                            print("Unexpected error occurred!")
                             raise
                         finally:
-                            videos.append(dict(playlist_index=playlist_index, video_id=video_id_str))
+                            if playlist_index and video_id_str:
+                                videos.append(dict(playlist_index=playlist_index, video_id=video_id_str))
                 playlist_id_1 = request.POST.get("playlist-id-1", )
                 playlist_id_2 = request.POST.get("playlist-id-2", )
                 playlist_id = playlist_id_1 or playlist_id_2
@@ -263,8 +271,19 @@ class AddPlaylistItemsPageView(generic.TemplateView):
                                                            video_id=upload_video_id,
                                                            playlist_index=upload_playlist_index)
                     responses.append(response)
+
                 context["responses"] = responses
 
+                self.context_display_username_playlist(context, request, session_credentials_)
             return render(request, template_name=self.template_name, context=context)
         else:
             return redirect("yt_login")
+
+    def context_display_username_playlist(self, context, request, session_credentials_):
+        context_save_username(request=request, session_credentials=session_credentials_,
+                              context=context)
+        context["playlist_item_id"] = request.session.get("playlist_id", )
+        context["playlist_title"] = request.session.get("playlist_title", )
+
+        video_ids = "1 - M7FIvfx5J10, \n" + "3 - https://www.youtube.com/watch?v=M7FIvfx5J10  "
+        context.update(video_ids=video_ids)

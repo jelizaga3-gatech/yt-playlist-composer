@@ -10,24 +10,36 @@
 </head>
 <style>
     #summary-div {
-        padding:20px;
+        padding: 0px 20px 20px;
     }
 
-    #upload-btn {
-        background-color: #ff0000;
+    .click-button-ellipses:hover {
+        background: rgb(208, 37, 37);
         color: #ffffff;
-        font-size: 16px;
-        font-weight: bold;
-        font-family: "Roboto+Slab", "Lucida Grande", Verdana, Arial, sans-serif;
-        padding: 20px;
-        border-radius: 50px;
-        margin: 0 auto 50px;
-        display: block;
+        box-shadow: 0 10px 25px -2px rgba(208, 37, 37, 0.6);
     }
 
-    .upload-btn-a {
-        text-underline: none;
-        color: #ffffff;
+    .click-button-ellipses:focus {
+        outline: none;
+    }
+
+    .click-button-ellipses {
+        margin-bottom: 20px;
+        background: #d02525;
+        color: #ffffff !important;
+        display: inline-block;
+        font-size: 15px;
+        font-weight: 500;
+        height: 50px;
+        line-height: 0.8;
+        padding: 18px 30px;
+        text-transform: capitalize;
+        border-radius: 1px;
+        letter-spacing: 0.5px;
+        border: 0px !important;
+        cursor: pointer;
+        border-radius: 100px;
+
     }
 
     .add-playlist-item-form-main-frame {
@@ -53,19 +65,26 @@
     }
 
     .textarea-form {
-        font-size: 14px;
+        width: 100%;
+    {#max-width: 350px;#} font-size: 14px;
         margin: 20px 0;
     }
 
     .title {
-        margin: 60px 0;
+        margin: 30px 0;
     }
 
     .center-a-tag {
-        display:inherit;
+        display: inherit;
     }
+
+    .body-font {
+        font-family: "Roboto Slab", "Lucida Grande", Verdana, Arial, sans-serif;
+        text-space: 1px;
+    }
+
 </style>
-<body>
+<body class="body-font">
 {% if credentials %}
     <form method="post" id="upload_form">
         {% csrf_token %}
@@ -77,76 +96,24 @@
                     <h1 class="headers-bold">Add Batch Videos to Playlist by Id</h1>
                 </div>
 
-                <div class="add-playlist-item-form col-md-7">
-                    <div class="container">
-                        <h2 class="first-header headers-bold">Instructions</h2>
-                        <p>
-                            In the textbox below, write a list of YouTube video ids prepended
-                            by the desired order. A video id example: M7FIvfx5J10. You can also
-                        provide the full link address: https://www.youtube.com/watch?v=M7FIvfx5J10
-                        <p>
-                            To insert a video into the playlist as the first item, write:<br> '1. M7FIvfx5J10'.
-                        </p>
-                        <p>
-                            This example adds the video of the Volvo Trucks <a
-                                href="https://www.youtube.com/watch?v=M7FIvfx5J10"> "Epic Split" commercial</a>,
-                            featuring Jean-Claude Van Damme to the specified playlist.
-                        </p>
-                    </div>
-                    <div class="container">
-                        <textarea class="textarea-form" placeholder="{{ video_ids }}" cols="55" rows="4"
-                                  name="text_area_input"
-                                  form="upload_form"></textarea>
-
-                    </div>
-                    <button id='upload-btn' type="submit" name="upload_items" value={{ playlist_item_id }}>
-                        <a class="upload-btn-a" href="">Upload Videos To Playlist</a>
-                    </button>
-                </div>
-
-                <div class="col-md-4 offset-1">
-                    <div id="summary-div" class="add-playlist-item-form ">
-
-                        <h2 class="first-header headers-bold text-center">Summary</h2>
-                        <h5 class="text-center">Welcome, {{ username }}!</h5>
-                        <h5 class="text-center">
-                            <br> The videos will be uploaded to playlist:
-                        </h5>
-                        {% if playlist_title %}
-                            <input type="hidden" name="playlist-id-1" value="{{ playlist_item_id }}"/>
-                            <a class="center-a-tag text-center" href="https://www.youtube.com/playlist?list={{ playlist_item_id }}">{{ playlist_title }}</a>
-
-                            <p>
-                            <br><br><br>
-                                If the playlist is "not found", try switching to the correct Brand on YouTube to view the
-                                playlist.
-                            </p>
-                        {% else %}
-                            <input type="text" name="playlist-id-2">
-                            <p>
-                            <br>
-                            Type playlist id into the textbox above.
-                            </p>
-                        {% endif %}
-                    </div>
-
-                    <br>
+                <div class="col-md-12">
                     {% if responses %}
                         <div>
-                            <h2>Results:</h2>
+                            <div class="alert alert-success" role="alert">
+                                Videos processed. Read more for details.
+                                <a href="https://www.youtube.com/playlist?list={{ playlist_id }}">See the playlist
+                                    here!</a>
+                            </div>
                             <ul>
-                                <a href="https://www.youtube.com/playlist?list={{ playlist_id }}"><h4>Go To
-                                    Playlist</h4>
-                                </a>
                                 {% for response in responses %}
                                     <li>
                                         {% if response.kind %}
                                             Video uploaded. Title: <strong>{{ response.snippet.title }} </strong>
-                                            <br> in
-                                            channel: {{ response.snippet.channelTitle }},  to playlistId:
-                                            {{ response.snippet.playlistId }}
+                                            {#                                            <br> in#}
+                                            {#                                            channel: {{ response.snippet.channelTitle }},  to playlistId:#}
+                                            {#                                            {{ response.snippet.playlistId }}#}
                                         {% else %}
-                                            Something failed.
+                                            A video failed to upload. Please see playlist for missing videos.
                                         {% endif %}
                                     </li>
                                     <br>
@@ -155,6 +122,68 @@
 
                         </div>
                     {% endif %}
+                </div>
+                <div class="add-playlist-item-form col-md-7" style="height: fit-content">
+                    <div class="container">
+                        <h2 class="first-header headers-bold">Instructions</h2>
+                        <p>
+                            In the textbox below, write a list of YouTube video ids prepended
+                            by the desired order. A video id example: M7FIvfx5J10. You can also
+                            provide the full link address: https://www.youtube.com/watch?v=M7FIvfx5J10
+                        <p>
+                            To insert a video into the playlist as the first item, write:<br> '1. M7FIvfx5J10'.
+                        </p>
+                        <p>
+                            The placeholder would add the following video, Volvo Trucks <a
+                                href="https://www.youtube.com/watch?v=M7FIvfx5J10"> "Epic Split" commercial</a>,
+                            featuring Jean-Claude Van Damme, to the specified playlist.
+                        </p>
+                    </div>
+                    <div class="container">
+                        {% if validation_error %}
+                            <div class="alert alert-warning" role="alert">
+                                {{ validation_error }}
+                            </div>
+                        {% endif %}
+                        <textarea class="form-control textarea-form" placeholder="{{ video_ids }}" cols="55" rows="4"
+                                  name="text_area_input"
+                                  form="upload_form"></textarea>
+
+                    </div>
+                    <div class="container text-center ">
+                        <input type="submit" class="click-button-ellipses" name="upload_items"
+                               value="Upload Videos To Playlist">
+                    </div>
+                </div>
+
+                <div class="col-md-4 offset-1">
+                    <div id="summary-div" class="add-playlist-item-form ">
+
+                        <h2 class="first-header headers-bold text-center">Summary</h2>
+                        <h5 class="text-center">Hey, {{ username }}!</h5>
+                        <h5 class="text-center">
+                            <br> The videos will be uploaded to playlist:
+                        </h5>
+                        {% if playlist_title %}
+                            <input type="hidden" name="playlist-id-1" value="{{ playlist_item_id }}"/>
+                            <a class="center-a-tag text-center"
+                               href="https://www.youtube.com/playlist?list={{ playlist_item_id }}">{{ playlist_title }}</a>
+
+                            <p>
+                                <br><br><br>
+                                If the playlist is "not found", try switching to the correct Brand on YouTube to view
+                                the
+                                playlist.
+                            </p>
+                        {% else %}
+                            <input type="text" name="playlist-id-2">
+                            <p>
+                                <br>
+                                Type playlist id into the textbox above.
+                            </p>
+                        {% endif %}
+                    </div>
+
                 </div>
             </div>
         </div>
